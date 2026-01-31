@@ -24,4 +24,21 @@ Key MLOps concepts implemented:
 
 ## 🗂️ Repository Structure
 
+---
+
+## 🙏 Credits & Acknowledgements
+
+This project is **inspired by and originally based on work by Veeramalla**.
+
+Original repository:
+🔗 https://github.com/iam-veeramalla/Wine-Prediction-Model
+
+### Enhancements added in this version:
+- Integrated **DVC with Google Cloud Storage** for data versioning
+- Added **MLflow** for experiment tracking
+- Cleaned and handled real-world data issues
+- Improved reproducibility and documentation
+- Structured the project as a complete **MLOps workflow**
+
+All MLOps-related integrations, debugging, and cloud setup were implemented independently as part of hands-on learning.
 
