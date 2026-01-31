@@ -15,10 +15,10 @@ def parse_args():
     p.add_argument("--csv", default="data/wine_sample.csv", help="Path to CSV (default: data/wine_sample.csv)")
     p.add_argument("--target", default="quality", help="Target column name (default: quality)")
     p.add_argument("--experiment", default="wine-prediction", help="MLflow experiment name")
-    p.add_argument("--run", default="run-2", help="MLflow run name")
+    p.add_argument("--run", default="run-1", help="MLflow run name")
     p.add_argument("--n-estimators", type=int, default=50, help="RandomForest n_estimators (default: 50)")
     p.add_argument("--max-depth", type=int, default=5, help="RandomForest max_depth (default: 5)")
-    p.add_argument("--test-size", type=float, default=0.2, help="Test split fraction (default: 0.3)")
+    p.add_argument("--test-size", type=float, default=0.9, help="Test split fraction (default: 0.3)")
     p.add_argument("--random-state", type=int, default=42, help="Random seed (default: 42)")
     return p.parse_args()
 
@@ -26,7 +26,7 @@ def main():
     args = parse_args()
 
     # Set MLflow tracking URI from env or use default
-    tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:7006")
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:7004")
     mlflow.set_tracking_uri(tracking_uri)
     mlflow.set_experiment(args.experiment)
 
@@ -34,6 +34,17 @@ def main():
     if not os.path.exists(args.csv):
         raise SystemExit(f"CSV not found: {args.csv}. Create or copy wine_sample.csv next to this script.")
     df = pd.read_csv(args.csv)
+
+    # 🔑 Clean column names
+    df.columns = df.columns.str.strip()
+
+    # 🔑 Convert all columns to numeric where possible
+    for col in df.columns:
+      df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    # 🔑 Drop rows with NaNs created by bad values
+    df = df.dropna()
+
 
     if args.target not in df.columns:
         raise SystemExit(f"Target column '{args.target}' not found in CSV. Columns: {list(df.columns)}")
